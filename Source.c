@@ -18,6 +18,16 @@ void v(AUTO *cur) {
 	printf("rok vyroby: %d\n", (cur)->rokv);
 	printf("stav vozidla: %s\n", (cur)->stav);
 }
+void getit(AUTO *new) {
+	getchar();
+	gets_s((new->kateg), 200);
+	gets_s((new->znacka), 200);
+	gets_s((new->predaj), 200);
+	scanf("%d", &(new)->cena);
+	scanf("%d", &new->rokv);
+	getchar();
+	gets_s((new->stav), 200);
+}
 void uvolni(AUTO *prv, AUTO *akt, int i)
 {
 	int j;
@@ -112,15 +122,7 @@ void Pridanie(int h, int *p, AUTO **prv, AUTO **akt) {
 		printf("Malo pamate.\n");
 		return;
 	}
-	char ret[200];
-	getchar();
-	gets_s((new->kateg), 200);
-	gets_s((new->znacka), 200);
-	gets_s((new->predaj), 200);
-	scanf("%d", &(new)->cena);
-	scanf("%d", &new->rokv);
-	getchar();
-	gets_s((new->stav), 200);
+	getit(new);
 	if (*prv == NULL) { (*prv) = new; }//ak nie je vztvoreny zoznam
 	else {
 	pom = akt;
@@ -203,14 +205,7 @@ void Aktual(int *poc, AUTO **akt) {
 	getchar();
 	gets_s(ret, 50);
 	scanf("%d", &c);
-	getchar();
-	gets_s((new->kateg), 200);
-	gets_s((new->znacka), 200);
-	gets_s((new->predaj), 200);
-	scanf("%d", &(new)->cena);
-	scanf("%d", &new->rokv);
-	getchar();
-	gets_s((new->stav), 200);
+	getit(new);
 	pom = akt;
 	new->stav[(strlen(new->stav)) - 1] = '\n';
 	for (i = 0; i < poc; i++) {

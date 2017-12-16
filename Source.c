@@ -1,18 +1,26 @@
 #include <stdio.h>
 #include<stdlib.h>
 #include<string.h>
-typedef struct kniz
-{
+typedef struct aut{
 	char kateg[50];
 	char znacka[50];
 	char predaj[100];
 	int cena;
 	int rokv;
 	char stav[200];
-	struct kniz *next;
-} KNIZ;
-
-void N(int *po, KNIZ **prv, KNIZ **akt) {
+	struct aut *next;
+} AUTO;
+void uvolni(AUTO *prv, AUTO *akt, int i)
+{
+	int j;
+	for (j = 1; j < i; j++) {
+		prv->next = akt->next;
+		free(akt);
+		akt = prv->next;
+	}
+	free(prv);
+}
+void Nacitanie(int *po, AUTO **prv, AUTO **akt) {
 	int i = 0, c, q = 0;
 	FILE *fr;
 	if ((fr = fopen("auta.txt", "r")) == NULL) {
@@ -25,13 +33,13 @@ void N(int *po, KNIZ **prv, KNIZ **akt) {
 	}
 	printf("Nacitalo sa %d zaznamov\n", q);
 	*po = q;
-	if (((*prv) = (KNIZ **)malloc(sizeof(KNIZ))) == NULL) {
+	if (((*prv) = (AUTO **)malloc(sizeof(AUTO))) == NULL) {
 		printf("Malo pamate.\n");
 		exit(1);
 	}
 	rewind(fr);
 	*akt = *prv;
-	KNIZ *pom;
+	AUTO *pom;
 	char ret[200];
 	for (i = 1; i <= q; i++) {
 		pom = (*akt);
@@ -51,7 +59,7 @@ void N(int *po, KNIZ **prv, KNIZ **akt) {
 		ret[(strlen(ret) - 1)] = 0;
 		strcpy(((*akt)->stav), ret);
 		if (i != q) {
-			if ((((*akt)->next) = (KNIZ **)malloc(sizeof(KNIZ))) == NULL) {
+			if ((((*akt)->next) = (AUTO **)malloc(sizeof(AUTO))) == NULL) {
 				printf("Malo pamate.\n");
 				exit(1);
 			};
@@ -59,9 +67,9 @@ void N(int *po, KNIZ **prv, KNIZ **akt) {
 		}
 	}
 }
-void V(int poc, KNIZ **prv, KNIZ **aktu) {
+void Vypis(int poc, AUTO **prv, AUTO **aktu) {
 	int i;
-	KNIZ *curr;
+	AUTO *curr;
 	curr = (prv);
 	for (i = 0; i < poc; i++) {
 		printf("%d.\n", i + 1);
@@ -75,11 +83,11 @@ void V(int poc, KNIZ **prv, KNIZ **aktu) {
 	}
 }
 
-void H(int poc, KNIZ **prv) {
+void Hladanie(int poc, AUTO **prv) {
 	if (poc != 0) {
 		int i, c, q = 0;
 		scanf("%d", &c);
-		KNIZ *cur;
+		AUTO *cur;
 		cur = prv;
 		for (i = 0; i < poc; i++) {
 			if (c >= (cur->cena)) {
@@ -97,21 +105,19 @@ void H(int poc, KNIZ **prv) {
 		if (q == 0) printf("V ponuke su len auta s vyssou cenou\n");
 	}
 }
-void P(int h, int *p, KNIZ **prv, KNIZ **akt) {
+void Pridanie(int h, int *p, AUTO **prv, AUTO **akt) {
 	int i, n;
 	scanf("%d", &n);
 	if (n <= 0) exit(1);
-	KNIZ *new, *pom;
-	if (((new) = (KNIZ **)malloc(sizeof(KNIZ))) == NULL) {
+	AUTO *new, *pom;
+	if (((new) = (AUTO **)malloc(sizeof(AUTO))) == NULL) {
 		printf("Malo pamate.\n");
 		return;
 	}
 	char ret[200];
 	getchar();
 	gets_s((new->kateg), 200);
-	//getchar();
 	gets_s((new->znacka), 200);
-	//getchar();
 	gets_s((new->predaj), 200);
 	scanf("%d", &(new)->cena);
 	scanf("%d", &new->rokv);
@@ -143,10 +149,10 @@ void P(int h, int *p, KNIZ **prv, KNIZ **akt) {
 	}
 	*p = h + 1;
 }
-void Z(int n, int *poc, KNIZ **prv, KNIZ **akt) {
+void Zmaz(int n, int *poc, AUTO **prv, AUTO **akt) {
 	if (akt == NULL) exit(1);
-	KNIZ *pom;
-	KNIZ *pred;
+	AUTO *pom;
+	AUTO *pred;
 	int i, j, q = 0, c = 0;
 	char ret[50];
 	char po[50];
@@ -187,12 +193,12 @@ void Z(int n, int *poc, KNIZ **prv, KNIZ **akt) {
 	*poc = n - q;
 	printf("Zmazalo sa %d zaznamov\n", q);
 }
-void A(int *poc, KNIZ **akt) {
+void Aktual(int *poc, AUTO **akt) {
 	if (poc == 0) { printf("Zoznam nie je vytvoreny\n"); return; }
 	int i, c, q = 0;
 	char ret[50];
-	KNIZ *new, *pom;
-	if (((new) = (KNIZ **)malloc(sizeof(KNIZ))) == NULL) {
+	AUTO *new, *pom;
+	if (((new) = (AUTO **)malloc(sizeof(AUTO))) == NULL) {
 		printf("Malo pamate.\n");
 		return;
 	}
@@ -201,9 +207,7 @@ void A(int *poc, KNIZ **akt) {
 	scanf("%d", &c);
 	getchar();
 	gets_s((new->kateg), 200);
-	//getchar();
 	gets_s((new->znacka), 200);
-	//getchar();
 	gets_s((new->predaj), 200);
 	scanf("%d", &(new)->cena);
 	scanf("%d", &new->rokv);
@@ -228,42 +232,33 @@ void A(int *poc, KNIZ **akt) {
 }
 int main() {
 	int i, poc = 0, c, n;
-	KNIZ *prvy = NULL, *aktu, *posl;
+	AUTO *prvy = NULL, *aktu, *posl;
 	while ((c = getchar()) != 'k') {
 		switch (c)
 		{
 		case 'n':
 			if (poc != 0) {
-				for (i = 1; i < poc; i++) {
-					prvy->next = aktu->next;
-					free(aktu);
-				}
-				free(prvy);
+				aktu = prvy->next;
+				uvolni(prvy, aktu, poc);
 			}
 
-			N(&poc, &prvy, &aktu); break;
+			Nacitanie(&poc, &prvy, &aktu); break;
 		case 'v':
-			if (poc != 0) { V(poc, prvy, aktu); } break;
+			if (poc != 0) { Vypis(poc, prvy, aktu); } break;
 		case 'h':
-			if (poc != 0) { H(poc, prvy); }break;
-		case 'p': //if (prvy == NULL)
-			n = poc; aktu = prvy; P(n, &poc, &prvy, aktu); break;
+			if (poc != 0) { Hladanie(poc, prvy); }break;
+		case 'p':
+			n = poc; aktu = prvy; Pridanie(n, &poc, &prvy, aktu); break;
 		case 'z':
-			if (poc == 0) {
-				//printf("Zoznam nie je vytvoreny\n");
-			}
-			else { n = poc; aktu = prvy; Z(n, &poc, &prvy, aktu); }break;
+			if (poc != 0) { n = poc; aktu = prvy; Zmaz(n, &poc, &prvy, aktu); }break;
 		case 'a':
-			if (poc != 0) { aktu = prvy; A(poc, aktu); }break;
+			if (poc != 0) { aktu = prvy; Aktual(poc, aktu); }break;
 		}
 
 	}
 	if (poc != 0) {
-		for (i = 1; i < poc; i++) {
-			prvy->next = aktu->next;
-			free(aktu);
-		}
-		free(prvy);
+		aktu = prvy->next;
+		uvolni(prvy, aktu, poc); 
 	}
 	return 0;
 }

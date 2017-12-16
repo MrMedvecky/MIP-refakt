@@ -12,3 +12,10 @@ AUTO Modranska 5 Senec
 28000
 2016
 po havarii opraveny v dobrom stave
+$
+traktor
+Zetor 500
+Autobazar
+25000
+2001
+prakticky novy

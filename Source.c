@@ -10,6 +10,14 @@ typedef struct aut{
 	char stav[200];
 	struct aut *next;
 } AUTO;
+void v(AUTO *cur) {
+	printf("kategoria: %s\n", (cur)->kateg);
+	printf("znacka: %s\n", (cur)->znacka);
+	printf("predajca: %s\n", (cur)->predaj);
+	printf("cena: %d\n", (cur)->cena);
+	printf("rok vyroby: %d\n", (cur)->rokv);
+	printf("stav vozidla: %s\n", (cur)->stav);
+}
 void uvolni(AUTO *prv, AUTO *akt, int i)
 {
 	int j;
@@ -73,12 +81,7 @@ void Vypis(int poc, AUTO **prv, AUTO **aktu) {
 	curr = (prv);
 	for (i = 0; i < poc; i++) {
 		printf("%d.\n", i + 1);
-		printf("kategoria: %s\n", (curr)->kateg);
-		printf("znacka: %s\n", (curr)->znacka);
-		printf("predajca: %s\n", (curr)->predaj);
-		printf("cena: %d\n", (curr)->cena);
-		printf("rok vyroby: %d\n", (curr)->rokv);
-		printf("stav vozidla: %s\n", (curr)->stav);
+		v(curr);
 		(curr) = (curr)->next;
 	}
 }
@@ -93,12 +96,7 @@ void Hladanie(int poc, AUTO **prv) {
 			if (c >= (cur->cena)) {
 				++q;
 				printf("%d.\n", q);
-				printf("kategoria: %s\n", (cur)->kateg);
-				printf("znacka: %s\n", (cur)->znacka);
-				printf("predajca: %s\n", (cur)->predaj);
-				printf("cena: %d\n", (cur)->cena);
-				printf("rok vyroby: %d\n", (cur)->rokv);
-				printf("stav vozidla: %s\n", (cur)->stav);
+				v(cur);
 			}
 			(cur) = (cur)->next;
 		}

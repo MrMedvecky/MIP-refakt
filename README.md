@@ -1,0 +1,1 @@
+v tomto branchi som nerefaktoroval
